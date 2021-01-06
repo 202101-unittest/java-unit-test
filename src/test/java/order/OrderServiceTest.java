@@ -8,19 +8,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class OrderServiceTest {
 
-    private OrderServiceForTest orderService;
+    private OrderService orderService;
     private BookDao bookDao;
 
     @Before
     public void setUp() throws Exception {
-        orderService = new OrderServiceForTest();
+//        orderService = new OrderServiceForTest();
+        orderService = Mockito.spy(OrderService.class);
+
         bookDao = Mockito.mock(BookDao.class);
-        orderService.setBookDao(bookDao);
+//        orderService.setBookDao(bookDao);
+        when(orderService.getBookDao()).thenReturn(bookDao);
     }
 
     @Test
@@ -41,7 +43,8 @@ public class OrderServiceTest {
     }
 
     private void givenOrders(Order... orders) {
-        orderService.setOrders(Arrays.asList(orders));
+//        orderService.setOrders(Arrays.asList(orders));
+        when(orderService.getOrders()).thenReturn(Arrays.asList(orders));
     }
 
     private Order createOrder(final String type) {
@@ -50,26 +53,26 @@ public class OrderServiceTest {
         }};
     }
 
-    private class OrderServiceForTest extends OrderService {
-        private List<Order> orders;
-        private BookDao bookDao;
-
-        @Override
-        protected BookDao getBookDao() {
-            return this.bookDao;
-        }
-
-        public void setBookDao(BookDao bookDao) {
-            this.bookDao = bookDao;
-        }
-
-        @Override
-        protected List<Order> getOrders() {
-            return this.orders;
-        }
-
-        public void setOrders(List<Order> orders) {
-            this.orders = orders;
-        }
-    }
+//    private class OrderServiceForTest extends OrderService {
+//        private List<Order> orders;
+//        private BookDao bookDao;
+//
+//        @Override
+//        protected BookDao getBookDao() {
+//            return this.bookDao;
+//        }
+//
+//        public void setBookDao(BookDao bookDao) {
+//            this.bookDao = bookDao;
+//        }
+//
+//        @Override
+//        protected List<Order> getOrders() {
+//            return this.orders;
+//        }
+//
+//        public void setOrders(List<Order> orders) {
+//            this.orders = orders;
+//        }
+//    }
 }
