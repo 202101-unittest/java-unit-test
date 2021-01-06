@@ -1,38 +1,53 @@
 package order;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class OrderServiceTest {
 
+    private OrderServiceForTest orderService;
+    private BookDao bookDao;
+
+    @Before
+    public void setUp() throws Exception {
+        orderService = new OrderServiceForTest();
+        bookDao = Mockito.mock(BookDao.class);
+        orderService.setBookDao(bookDao);
+    }
+
     @Test
     public void syncBookOrders_3_orders_only_2_book_order() {
-        OrderServiceForTest orderService = new OrderServiceForTest();
-        orderService.setOrders(asList(
-                new Order() {{
-                    setType("Book");
-                }},
-                new Order() {{
-                    setType("CD");
-                }},
-                new Order() {{
-                    setType("Book");
-                }}
-        ));
+        givenOrders(
+                createOrder("Book"),
+                createOrder("CD"),
+                createOrder("Book"));
 
-        BookDao bookDao = Mockito.mock(BookDao.class);
-        orderService.setBookDao(bookDao);
         orderService.syncBookOrders();
 
-        verify(bookDao, times(2))
-                .insert(argThat(order -> order.getType().equals("Book")));
+        shouldInsertOrders("Book", 2);
+    }
+
+    private void shouldInsertOrders(String type, int times) {
+        verify(bookDao, times(times))
+                .insert(argThat(order -> order.getType().equals(type)));
+    }
+
+    private void givenOrders(Order... orders) {
+        orderService.setOrders(Arrays.asList(orders));
+    }
+
+    private Order createOrder(final String type) {
+        return new Order() {{
+            setType(type);
+        }};
     }
 
     private class OrderServiceForTest extends OrderService {
