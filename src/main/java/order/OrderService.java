@@ -16,13 +16,18 @@ public class OrderService {
         // only get orders of book
         List<Order> ordersOfBook = orders.stream().filter(x -> x.getType().equals("Book")).collect(toList());
 
-        BookDao bookDao = new BookDao();
+        BookDao bookDao = getBookDao();
         for (Order order : ordersOfBook) {
             bookDao.insert(order);
         }
     }
 
-    private List<Order> getOrders() {
+    protected BookDao getBookDao() {
+        BookDao bookDao = new BookDao();
+        return bookDao;
+    }
+
+    protected List<Order> getOrders() {
         // parse csv file to get orders
         List<Order> result = new ArrayList<>();
 
