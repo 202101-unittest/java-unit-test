@@ -34,16 +34,22 @@ public class AuthenticationServiceTest {
 
     @Test
     public void notify_user_when_invalid() {
-        givenPassword("joey", "91");
-        givenToken("000000");
-        target.isValid("joey", "wrong password");
-//        verify(notification, times(1))
-//                .notify("account:joey try to login failed");
+        whenInvalid("joey");
+        shouldNotify("joey", "login failed");
+    }
+
+    private void shouldNotify(String account, String status) {
         ArgumentCaptor<String> captor = forClass(String.class);
         verify(notification).notify(captor.capture());
         String message = captor.getValue();
 
-        assertThat(message).contains("joey", "login failed");
+        assertThat(message).contains(account, status);
+    }
+
+    private void whenInvalid(String account) {
+        givenPassword(account, "91");
+        givenToken("000000");
+        target.isValid("joey", "wrong password");
     }
 
     private void shouldBeInvalid(String account, String password) {
