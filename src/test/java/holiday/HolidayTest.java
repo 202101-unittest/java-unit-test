@@ -7,11 +7,21 @@ import java.time.LocalDate;
 import static org.junit.Assert.assertEquals;
 
 public class HolidayTest {
+
+    private HolidayForTest holiday = new HolidayForTest();
+
     @Test
     public void today_is_xmas() {
-        HolidayForTest holiday = new HolidayForTest();
-        holiday.setToday(LocalDate.of(2000, 12, 25));
-        assertEquals("Merry Xmas", holiday.sayHello());
+        giveToday(12, 25);
+        sayHelloShouldBe("Merry Xmas");
+    }
+
+    private void sayHelloShouldBe(String expected) {
+        assertEquals(expected, holiday.sayHello());
+    }
+
+    private void giveToday(int month, int dayOfMonth) {
+        holiday.setToday(LocalDate.of(2000, month, dayOfMonth));
     }
 
     private class HolidayForTest extends Holiday {
