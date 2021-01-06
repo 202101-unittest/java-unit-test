@@ -1,12 +1,15 @@
 package otp;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class AuthenticationServiceTest {
 
@@ -27,6 +30,20 @@ public class AuthenticationServiceTest {
         givenPassword("joey", "91");
         givenToken("000000");
         shouldBeInvalid("joey", "wrong password");
+    }
+
+    @Test
+    public void notify_user_when_invalid() {
+        givenPassword("joey", "91");
+        givenToken("000000");
+        target.isValid("joey", "wrong password");
+//        verify(notification, times(1))
+//                .notify("account:joey try to login failed");
+        ArgumentCaptor<String> captor = forClass(String.class);
+        verify(notification).notify(captor.capture());
+        String message = captor.getValue();
+
+        assertThat(message).contains("joey", "login failed");
     }
 
     private void shouldBeInvalid(String account, String password) {
