@@ -9,38 +9,27 @@ import static org.mockito.Mockito.when;
 
 public class AuthenticationServiceTest {
 
+    private Profile profile = Mockito.mock(Profile.class);
+    private Token token = Mockito.mock(Token.class);
+    private AuthenticationService target = new AuthenticationService(profile, token);
+
     @Test
     public void is_valid_test() {
-//        FakeProfile profile = new FakeProfile();
-        Profile profile = Mockito.mock(Profile.class);
-        when(profile.getPassword("joey")).thenReturn("91");
+        givenPassword("joey", "91");
+        givenToken("000000");
+        shouldBeValid("joey", "91000000");
+    }
 
-//        FakeToken token = new FakeToken();
-        Token token = Mockito.mock(Token.class);
-        when(token.getRandom(anyString())).thenReturn("000000");
-
-        AuthenticationService target = new AuthenticationService(profile, token);
-
-        boolean actual = target.isValid("joey", "91000000");
+    private void shouldBeValid(String account, String password) {
+        boolean actual = target.isValid(account, password);
         assertTrue(actual);
     }
 
-    private class FakeProfile implements Profile {
-
-        @Override
-        public String getPassword(String account) {
-            if (account == "joey") {
-                return "91";
-            }
-            return "";
-        }
+    private void givenToken(String token) {
+        when(this.token.getRandom(anyString())).thenReturn(token);
     }
 
-    private class FakeToken implements Token {
-
-        @Override
-        public String getRandom(String account) {
-            return "000000";
-        }
+    private void givenPassword(String account, String password) {
+        when(profile.getPassword(account)).thenReturn(password);
     }
 }
