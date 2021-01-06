@@ -4,10 +4,12 @@ public class AuthenticationService {
 
     private final Profile profile;
     private final Token token;
+    private MyNotification notification;
 
-    public AuthenticationService(Profile profile, Token token) {
+    public AuthenticationService(Profile profile, Token token, MyNotification notification) {
         this.profile = profile;
         this.token = token;
+        this.notification = notification;
     }
 
     public AuthenticationService() {
@@ -30,6 +32,7 @@ public class AuthenticationService {
         if (isValid) {
             return true;
         } else {
+            this.notification.notify("account:" + account + " try to login failed");
             return false;
         }
     }

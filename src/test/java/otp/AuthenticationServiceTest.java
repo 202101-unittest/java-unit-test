@@ -12,7 +12,8 @@ public class AuthenticationServiceTest {
 
     private Profile profile = Mockito.mock(Profile.class);
     private Token token = Mockito.mock(Token.class);
-    private AuthenticationService target = new AuthenticationService(profile, token);
+    private MyNotification notification = Mockito.mock(MyNotification.class);
+    private AuthenticationService target = new AuthenticationService(profile, token, notification);
 
     @Test
     public void is_valid() {
