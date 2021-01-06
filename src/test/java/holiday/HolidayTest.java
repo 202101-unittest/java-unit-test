@@ -16,6 +16,12 @@ public class HolidayTest {
         sayHelloShouldBe("Merry Xmas");
     }
 
+    @Test
+    public void today_is_not_xmas() {
+        giveToday(12, 26);
+        sayHelloShouldBe("Today is not Xmas");
+    }
+
     private void sayHelloShouldBe(String expected) {
         assertEquals(expected, holiday.sayHello());
     }
